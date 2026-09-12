@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BlogAppTests/BlogAppTests.csproj" />
+  <Project Path="Entities/Entities.csproj" Id="94a95907-e9da-42cd-bfb4-a86d7d7529ae" />
+  <Project Path="MVCBlogApp/MVCBlogApp.csproj" />
+  <Project Path="ServiceContracts/ServiceContracts.csproj" Id="94142b0b-d6e5-41ef-9852-54ec80c80245" />
+</Solution>
