@@ -1,7 +1,6 @@
 <Solution>
   <Project Path="BlogAppTests/BlogAppTests.csproj" />
-  <Project Path="Entities/Entities.csproj" Id="94a95907-e9da-42cd-bfb4-a86d7d7529ae" />
+  <Project Path="Core/Core.csproj" Id="70e248f9-1ea5-4a0a-aafd-bba27be3e3cb" />
+  <Project Path="Infrastructure/Infrastructure.csproj" Id="a4b05bca-a534-4876-8873-d29d001447c2" />
   <Project Path="MVCBlogApp/MVCBlogApp.csproj" />
-  <Project Path="ServiceContracts/ServiceContracts.csproj" Id="94142b0b-d6e5-41ef-9852-54ec80c80245" />
-  <Project Path="Services/Services.csproj" Id="262f6f6d-1fc3-4364-998f-dc51b3ba3dcf" />
 </Solution>
