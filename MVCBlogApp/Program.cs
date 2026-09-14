@@ -1,5 +1,12 @@
+using Core.Interfaces;
+using Infrastructure.Repositories;
+using Core.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IBlogRepository>(sp => new BlogRepository(builder.Configuration.GetConnectionString("BlogServerDb")));
+builder.Services.AddScoped<IBlogService, BlogService>();
 
 var app = builder.Build();
 
@@ -10,5 +17,6 @@ if (builder.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
+
 
 app.Run();

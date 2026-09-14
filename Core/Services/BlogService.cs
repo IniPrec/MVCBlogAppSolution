@@ -6,100 +6,65 @@ namespace Core.Services
 {
     public class BlogService : IBlogService
     {
-        private readonly List<Blog> _blogs;
+        private readonly IBlogRepository _blogRepository;
 
-        public BlogService()
+        public BlogService(IBlogRepository blogRepository)
         {
-            _blogs = new List<Blog>();
+            _blogRepository = blogRepository;
         }
 
-        public BlogResponse AddBlog(AddBlogRequest? blogAddRequest)
+        public async Task<BlogResponse> AddBlog(AddBlogRequest? blogAddRequest)
         {
             if (blogAddRequest == null)
-            {
-                throw new ArgumentNullException(nameof(blogAddRequest), "Blog request cannot be null");
-            }
+                throw new ArgumentNullException(nameof(blogAddRequest));
 
-            if (blogAddRequest.BlogTitle == null)
-            {
-                throw new ArgumentException("Blog title cannot be null", nameof(blogAddRequest.BlogTitle));
-            }
+            if (string.IsNullOrEmpty(blogAddRequest.BlogTitle))
+                throw new ArgumentException("Blog title cannot be null or empty");
 
-            if (blogAddRequest.BlogTitle ==  string.Empty)
-            {
-                throw new ArgumentException("Blog title cannot be empty", nameof(blogAddRequest.BlogTitle));
-            }
-
-            if (_blogs.Where(temp => temp.BlogTitle == blogAddRequest.BlogTitle).Any())
-            {
-                throw new ArgumentException("Blog title already exists", nameof(blogAddRequest.BlogTitle));
-            }
+            List<Blog> existingBlogs = await _blogRepository.GetAllBlogs();
+            if (existingBlogs.Any(b => b.BlogTitle == blogAddRequest.BlogTitle))
+                throw new ArgumentException("Duplicate blog title");
 
             Blog blog = blogAddRequest.ToBlog();
-
-            blog.BlogId = Guid.NewGuid();
-
-            _blogs.Add(blog);
-
-            return blog.ToBlogResponse();
+            Blog addedBlog = await _blogRepository.AddBlog(blog);
+            return addedBlog.ToBlogResponse();
         }
 
-
-        public List<BlogResponse> GetAllBlogs()
+        public async Task<List<BlogResponse>> GetAllBlogs()
         {
-            return _blogs.Select(blog => blog.ToBlogResponse()).ToList();
+            List<Blog> blogs = await _blogRepository.GetAllBlogs();
+            return blogs.Select(b => b.ToBlogResponse()).ToList();
         }
 
-        public BlogResponse? GetBlogById(Guid? blogId)
+        public async Task<BlogResponse?> GetBlogById(Guid? blogId)
         {
-            if (blogId == null)
-                return null;
-
-            Blog? blog_response_from_list = _blogs.FirstOrDefault(temp => temp.BlogId == blogId);
-
-            if (blog_response_from_list == null)
-                return null;
-
-            return blog_response_from_list.ToBlogResponse();
+            if (blogId == null) return null;
+            Blog? blog = await _blogRepository.GetBlogById(blogId.Value);
+            return blog?.ToBlogResponse();
         }
 
-        public BlogResponse UpdateBlog(UpdateBlogRequest? updateBlogRequest)
+        public async Task<BlogResponse> UpdateBlog(UpdateBlogRequest? updateBlogRequest)
         {
             if (updateBlogRequest == null)
-            {
-                throw new ArgumentNullException(nameof(updateBlogRequest), "Update request cannot be null");
-            }
+                throw new ArgumentNullException(nameof(updateBlogRequest));
 
-            Blog? existingBlog = _blogs.FirstOrDefault(temp => temp.BlogId == updateBlogRequest.BlogId);
-
+            Blog? existingBlog = await _blogRepository.GetBlogById(updateBlogRequest.BlogId);
             if (existingBlog == null)
-            {
-                throw new ArgumentException("Blog with given BlogId does not exist");
-            }
+                throw new ArgumentException("Blog does not exist");
 
             existingBlog.BlogTitle = updateBlogRequest.BlogTitle;
             existingBlog.BlogContent = updateBlogRequest.BlogContent;
             existingBlog.UpdatedAt = DateTime.UtcNow;
 
-            return existingBlog.ToBlogResponse();
+            Blog updated = await _blogRepository.UpdateBlog(existingBlog);
+            return updated.ToBlogResponse();
         }
 
-        public bool DeleteBlog(Guid? blogId)
+        public async Task<bool> DeleteBlog(Guid? blogId)
         {
             if (blogId == null)
-            {
-                throw new ArgumentNullException(nameof(blogId), "Blog Id cannot be null");
-            }
-
-            Blog? blog = _blogs.FirstOrDefault(temp => temp.BlogId == blogId);
-
-            if (blog == null)
-            {
-                return false;
-            }
-
-            _blogs.Remove(blog);
-            return true;
+                throw new ArgumentNullException(nameof(blogId));
+            return await _blogRepository.DeleteBlog(blogId.Value);
         }
     }
 }

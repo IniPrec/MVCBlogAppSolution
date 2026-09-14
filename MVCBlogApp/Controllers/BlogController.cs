@@ -4,11 +4,11 @@ using Core.Interfaces.DTO;
 
 namespace MVCBlogApp.Controllers
 {
-    public class BlogControllers
+    public class BlogController : Controller
     {
         private readonly IBlogService _blogService;
 
-        public BlogControllers(IBlogService blogService)
+        public BlogController(IBlogService blogService)
         {
             _blogService = blogService;
         }
@@ -31,5 +31,10 @@ namespace MVCBlogApp.Controllers
 
             return View(blog);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }   
     }
 }
