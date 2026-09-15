@@ -1,0 +1,15 @@
+﻿@model Core.Interfaces.DTO.BlogResponse
+
+<div class="post-body">
+    <h1>@Model.BlogTitle</h1>
+    <p class="post-meta">By @Model.UserName on @Model.CreatedAt.ToString("MMMM dd, yyyy")</p>
+    <div>@Model.BlogContent</div>
+</div>
+
+<div class="form-group">
+    <a asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.BlogId" class="btn-publish">Edit this post</a>
+    <a asp-controller="Blog" asp-action="Index" class="btn-cancel">Back to all posts</a>
+    <form asp-controller="Blog" asp-action="Delete" asp-route-id="@Model.BlogId" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
+        <button type="submit" class="btn-cancel">Delete</button>
+    </form>
+</div>

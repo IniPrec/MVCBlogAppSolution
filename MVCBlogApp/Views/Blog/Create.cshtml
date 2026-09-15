@@ -1,0 +1,26 @@
+﻿@model Core.Interfaces.DTO.AddBlogRequest
+
+<div class="blog-header">
+    <h1>New Post</h1>
+</div>
+
+<div class="post-list">
+    <form asp-controller="Blog" asp-action="Create" method="post" class="post-form">
+        <div class="form-group">
+            <label asp-for="BlogTitle">Title</label>
+            <input asp-for="BlogTitle" class="form-input" />
+            <span asp-validation-for="BlogTitle" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="BlogContent">Content</label>
+            <textarea asp-for="BlogContent" class="form-input" rows="8"></textarea>
+            <span asp-validation-for="BlogContent" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn-publish">Publish</button>
+        <a asp-controller="Blog" asp-action="Index" class="btn-cancel">Cancel</a>
+    </form>
+</div>
+
+ 

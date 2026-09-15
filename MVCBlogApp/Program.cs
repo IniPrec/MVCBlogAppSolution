@@ -17,6 +17,9 @@ if (builder.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Blog}/{action=Index}/{id?}");
 
 
 app.Run();

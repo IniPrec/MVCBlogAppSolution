@@ -8,6 +8,7 @@ namespace Core.Interfaces.DTO
     /// </summary>
     public class AddBlogRequest
     {
+        public Guid UserId { get; set; }
         public string? BlogTitle { get; set; }
         public string? BlogContent { get; set; }
 
@@ -20,7 +21,8 @@ namespace Core.Interfaces.DTO
                 BlogContent = this.BlogContent,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                IsDeleted = false
+                IsDeleted = false,
+                UserId = this.UserId
             };
         }
     }

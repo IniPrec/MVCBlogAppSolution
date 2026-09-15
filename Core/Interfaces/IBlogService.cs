@@ -7,14 +7,14 @@ namespace Core.Interfaces
     /// </summary>
     public interface IBlogService
     {
-        BlogResponse AddBlog(AddBlogRequest? blogAddRequest);
+        Task<BlogResponse> AddBlog(AddBlogRequest? blogAddRequest);
 
-        List<BlogResponse> GetAllBlogs();
+        Task<List<BlogResponse>> GetAllBlogs();
 
-        BlogResponse GetBlogById(Guid? blogId);
+        Task<BlogResponse> GetBlogById(Guid? blogId);
 
-        BlogResponse UpdateBlog(UpdateBlogRequest? updateBlogRequest);
+        Task<BlogResponse> UpdateBlog(UpdateBlogRequest? updateBlogRequest);
 
-        bool DeleteBlog(Guid? blogId);
+        Task<bool> DeleteBlog(Guid? blogId);
     }
 }
