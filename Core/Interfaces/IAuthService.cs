@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Core.Interfaces.DTO;
 
 namespace Core.Interfaces
 {
-    internal class IAuthService
+    public interface IAuthService
     {
+        Task<UserResponse> Register(RegisterRequest registerRequest);
+        Task<UserResponse> Login(LoginRequest loginRequest);
     }
 }

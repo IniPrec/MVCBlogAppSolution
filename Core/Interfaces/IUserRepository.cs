@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Core.Domain.Entities;
 
 namespace Core.Interfaces
 {
-    internal class IUserRepository
+    public interface IUserRepository
     {
+        Task<User> AddUser(User user);
+        Task<User?> GetUserByEmail(string email);
+        Task<User?> GetUserById(Guid userId);
     }
 }

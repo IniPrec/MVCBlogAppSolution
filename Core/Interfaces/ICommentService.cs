@@ -4,14 +4,10 @@ namespace Core.Interfaces
 {
     public interface ICommentService
     {
-        CommentResponse AddComment(AddCommentRequest? addCommentRequest);
-
-        List<CommentResponse> GetAllComments();
-
-        CommentResponse GetCommentById(Guid? commentId);
-
-        CommentResponse UpdateComment(UpdateCommentRequest? updateCommentRequest);
-
-        bool DeleteComment(Guid? commentId);
+        Task<CommentResponse> AddComment(AddCommentRequest addCommentRequest);
+        Task<List<CommentResponse>> GetCommentsByBlogId(Guid blogId);
+        Task<CommentResponse> GetCommentById(Guid blogId);
+        Task<CommentResponse> UpdateComment(UpdateCommentRequest updateCommentRequest);
+        Task<bool> DeleteComment(Guid commentId);
     }
 }

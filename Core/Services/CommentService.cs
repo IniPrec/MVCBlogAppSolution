@@ -6,14 +6,14 @@ namespace Core.Services
 {
     public class CommentService : ICommentService
     {
-        private readonly List<Comment> _comments;
+        private readonly ICommentRepository _commentRepository;
 
-        public CommentService()
+        public CommentService(ICommentRepository commentRepository)
         {
-            _comments = new List<Comment>();
+            _commentRepository = commentRepository;
         }
 
-        public CommentResponse AddComment(AddCommentRequest? addCommentRequest)
+        public async Task<CommentResponse> AddComment(AddCommentRequest? addCommentRequest)
         {
             if (addCommentRequest == null)
             {
@@ -22,72 +22,58 @@ namespace Core.Services
 
             if (string.IsNullOrEmpty(addCommentRequest.CommentText))
             {
-                throw new ArgumentException("Comment text cannot be null or empty", nameof(addCommentRequest.CommentText));
+                throw new ArgumentException("Comment text cannot be null or empty");
             }
 
             Comment comment = addCommentRequest.ToComment();
-            _comments.Add(comment);
+            Comment addedComment = await _commentRepository.AddComment(comment);
 
-            return comment.ToCommentResponse();
+            return addedComment.ToCommentResponse();
         }
 
-        public bool DeleteComment(Guid? commentId)
+        public async Task<List<CommentResponse>> GetCommentsByBlogId(Guid blogId)
         {
-            if (commentId == null)
-            {
-                throw new ArgumentNullException(nameof(commentId), "Comment ID cannot be null");
-            }
+            List<Comment> comments = await _commentRepository.GetCommentsByBlogId(blogId);
 
-            Comment? comment = _comments.FirstOrDefault(temp => temp.CommentId == commentId);
-
-            if (comment == null)
-            {
-                return false;
-            }
-
-            _comments.Remove(comment);
-            return true;
+            return comments.Select(c => c.ToCommentResponse()).ToList();
         }
 
-        public List<CommentResponse> GetAllComments()
+        public async Task<CommentResponse?> GetCommentById(Guid commentId)
         {
-            return _comments.Select(comment => comment.ToCommentResponse()).ToList();
+            if (commentId == null) return null;
+            Comment? comment = await _commentRepository.GetCommentById(commentId);
+
+            return comment?.ToCommentResponse();
         }
 
-        public CommentResponse GetCommentById(Guid? commentId)
-        {
-            if (commentId == null)
-            {
-                return null;
-            }
-
-            Comment? comment = _comments.FirstOrDefault(temp =>  temp.CommentId == commentId);
-
-            if (comment == null)
-            {
-                return null;
-            }
-
-            return comment.ToCommentResponse();
-        }
-
-        public CommentResponse UpdateComment(UpdateCommentRequest? updateCommentRequest)
+        public async Task<CommentResponse> UpdateComment(UpdateCommentRequest? updateCommentRequest)
         {
             if (updateCommentRequest == null)
             {
-                throw new ArgumentNullException(nameof(updateCommentRequest), "Update request cannot be null");
+                throw new ArgumentNullException(nameof(updateCommentRequest));
             }
 
-            Comment? existingcomment = _comments.FirstOrDefault(temp => temp.CommentId == updateCommentRequest.CommentId);
-            
-            if (existingcomment == null)
+            Comment? existingComment = await _commentRepository.GetCommentById(updateCommentRequest.CommentId);
+
+            if (existingComment == null)
             {
-                throw new ArgumentException("Comment with given ID doesn't exist");
+                throw new ArgumentException("Comment does not exist");
             }
 
-            existingcomment.CommentText = updateCommentRequest.CommentText;
+            existingComment.CommentText = updateCommentRequest.CommentText;
+            Comment updated = await _commentRepository.UpdateComment(existingComment);
 
-            return existingcomment.ToCommentResponse();
+            return updated.ToCommentResponse();
+        }
+
+        public async Task<bool> DeleteComment(Guid commentId)
+        {
+            if (commentId == null)
+            {
+                throw new ArgumentNullException(nameof(commentId));
+            }
+
+            return await _commentRepository.DeleteComment(commentId);
         }
     }
 }

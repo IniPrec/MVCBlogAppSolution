@@ -5,7 +5,7 @@
 </div>
 
 <div class="post-list">
-    <form asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.BlogId" method="post" class="post-form">
+    <form asp-controller="Blog" asp-action="Update" asp-route-id="@Model.BlogId" method="post" class="post-form">
         <div class="form-group">
             <label asp-for="BlogTitle"></label>
             <input asp-for="BlogTitle" class="form-input" />

@@ -6,54 +6,47 @@ namespace Core.Services
 {
     public class LikeService : ILikeService
     {
-        private readonly List<Like> _likes;
+        private readonly ILikeRepository _likeRepository;
 
-        public LikeService()
+        public LikeService(ILikeRepository likeRepository)
         {
-            _likes = new List<Like>();
+            _likeRepository = likeRepository;   
         }
 
-        public LikeResponse AddLike(AddLikeRequest? addLikeRequest)
+        public async Task<LikeResponse> AddLike(AddLikeRequest? addLikeRequest)
         {
             if (addLikeRequest == null)
             {
-                throw new ArgumentNullException(nameof(addLikeRequest), "Like request cannot be null");
+                throw new ArgumentNullException(nameof(addLikeRequest));
             }
 
-            bool alreadyLiked = _likes.Any(temp => temp.BlogId == addLikeRequest.BlogId && temp.UserId == addLikeRequest.UserId);
-
-            if (alreadyLiked)
+            Like? existingLike = await _likeRepository.GetLike(addLikeRequest.BlogId, addLikeRequest.UserId);
+            if (existingLike == null)
             {
-                throw new ArgumentException("User has already like this blog");
+                throw new ArgumentException("User already like this blog.");  
             }
 
             Like like = addLikeRequest.ToLike();
-            _likes.Add(like);
+            Like addedLike = await _likeRepository.AddLike(like);
 
-            return like.ToLikeResponse();
+            return addedLike.ToLikeResponse();
         }
 
-        public int GetLikeCountByBlogId(Guid blogId)
+        public async Task<int> GetLikeCountByBlogId(Guid blogId)
         {
-            return _likes.Count(temp => temp.BlogId == blogId);
+            return await _likeRepository.GetLikeCountByBlogId(blogId);
         }
 
-        public bool HasUserLikedBlog(Guid blogId, Guid userId)
+        public async Task<bool> HasUserLikedBlog(Guid blogId, Guid userId)
         {
-            return _likes.Any(temp => temp.BlogId == blogId && temp.UserId == userId);
+            Like? like = await _likeRepository.GetLike(blogId, userId);
+
+            return like != null;
         }
 
-        public bool RemoveLike(Guid blogId, Guid userId)
+        public async Task<bool> RemoveLike(Guid blogId, Guid userId)
         {
-            Like? like = _likes.FirstOrDefault(temp => temp.BlogId == blogId && temp.UserId == userId);
-
-            if (like == null)
-            {
-                return false;
-            }
-
-            _likes.Remove(like);
-            return true;
+            return await _likeRepository.RemoveLike(blogId, userId);
         }
     }
 }

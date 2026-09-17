@@ -4,9 +4,9 @@ namespace Core.Interfaces
 {
     public interface ILikeService
     {
-        int GetLikeCountByBlogId(Guid blogId);
-        bool HasUserLikedBlog(Guid blogId, Guid UserId);
-        LikeResponse AddLike(AddLikeRequest? addLikeRequest);
-        bool RemoveLike(Guid blogId, Guid userId);
+        Task<int> GetLikeCountByBlogId(Guid blogId);
+        Task<bool> HasUserLikedBlog(Guid blogId, Guid UserId);
+        Task<LikeResponse> AddLike(AddLikeRequest? addLikeRequest);
+        Task<bool> RemoveLike(Guid blogId, Guid userId);
     }
 }

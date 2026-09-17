@@ -1,8 +1,15 @@
 ﻿@model List<Core.Interfaces.DTO.BlogResponse>
 
+@{
+    var role = Context.Session.GetString("Role");
+}
+
 <div class="blog-header">
     <h1>Innie's Blog</h1>
-    <a asp-controller="Blog" asp-action="Create" method="post" class="btn-publish">New Post</a>
+    @if (role == "Admin")
+    {
+        <a asp-controller="Blog" asp-action="Create" method="post" class="btn-publish">New Post</a>
+    }
 </div>
 
 <div class="post-list">
@@ -12,7 +19,15 @@
             <div class="post-title">
                 <a asp-controller="Blog" asp-action="Details" asp-route-id="@blog.BlogId">@blog.BlogTitle</a>
             </div>
+            <div class="post-preview">
+                @blog.BlogContent.Substring(0, Math.Min(blog.BlogContent.Length, 150))...
+            </div>
             <div class="post-meta">@blog.UserName &middot; @blog.CreatedAt.ToString("MMM dd, yyyy")</div>
         </div>
     }
 </div>
+
+@if (ViewBag.CurrentPage < ViewBag.TotalPage)
+{
+    <a asp-controller="Blog" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="bt-cancel">See more posts</a>
+}
