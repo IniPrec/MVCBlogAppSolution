@@ -27,7 +27,9 @@
     }
 </div>
 
-@if (ViewBag.CurrentPage < ViewBag.TotalPage)
-{
-    <a asp-controller="Blog" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="bt-cancel">See more posts</a>
-}
+<div>
+    @if (ViewBag.CurrentPage < ViewBag.TotalPage)
+    {
+        <a asp-controller="Blog" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="bt-cancel">See more posts</a>
+    }
+</div>

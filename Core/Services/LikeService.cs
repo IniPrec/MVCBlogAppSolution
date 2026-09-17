@@ -21,7 +21,7 @@ namespace Core.Services
             }
 
             Like? existingLike = await _likeRepository.GetLike(addLikeRequest.BlogId, addLikeRequest.UserId);
-            if (existingLike == null)
+            if (existingLike != null)
             {
                 throw new ArgumentException("User already like this blog.");  
             }

@@ -7,10 +7,12 @@ namespace Core.Services
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IUserRepository _userRepository;
 
-        public CommentService(ICommentRepository commentRepository)
+        public CommentService(ICommentRepository commentRepository, IUserRepository userRepository)
         {
             _commentRepository = commentRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<CommentResponse> AddComment(AddCommentRequest? addCommentRequest)
@@ -34,8 +36,17 @@ namespace Core.Services
         public async Task<List<CommentResponse>> GetCommentsByBlogId(Guid blogId)
         {
             List<Comment> comments = await _commentRepository.GetCommentsByBlogId(blogId);
+            List<CommentResponse> responses = new List<CommentResponse>();
 
-            return comments.Select(c => c.ToCommentResponse()).ToList();
+            foreach (var comment in comments)
+            {
+                CommentResponse response = comment.ToCommentResponse();
+                User? user = await _userRepository.GetUserById(comment.UserId);
+                response.UserName = user?.UserName ?? "Unknown";
+                responses.Add(response);
+            }
+
+            return responses;
         }
 
         public async Task<CommentResponse?> GetCommentById(Guid commentId)

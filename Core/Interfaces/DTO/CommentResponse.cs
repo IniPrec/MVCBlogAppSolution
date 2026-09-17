@@ -10,6 +10,7 @@ namespace Core.Interfaces.DTO
         public Guid UserId { get; set; }
         public string? CommentText { get; set; }
         public DateTime? CreatedAt { get; set; }
+        public string? UserName { get; set; }
     }
 
     public static class CommentResponseExtensions

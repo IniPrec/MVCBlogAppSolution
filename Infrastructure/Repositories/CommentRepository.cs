@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 string sql = @"INSERT INTO Comments (CommentId, CommentText, CreatedAt, UpdatedAt, IsDeleted, BlogId, UserId)
-                                VALUES (@CommentId, @CommentText, @CreatedAt, @UpdatedAt, @IsDeleted, @BlogId, @UserId)";
+                                VALUES (@CommentId, @CommentText, @CreatedAt, @IsDeleted, @BlogId, @UserId)";
                 await connection.ExecuteAsync(sql, comment);
 
                 return comment;
@@ -51,7 +51,7 @@ namespace Infrastructure.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string sql = @"UPDATE Comments SET CommentText = @CommentText, UpdatedAt = @UpdatedAt WHERE CommentId = @CommentId";
+                string sql = @"UPDATE Comments SET CommentText = @CommentText, WHERE CommentId = @CommentId";
                 await connection.ExecuteAsync(sql, comment);
 
                 return comment;

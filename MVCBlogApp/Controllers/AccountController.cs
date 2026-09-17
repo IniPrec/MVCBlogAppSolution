@@ -36,7 +36,7 @@ namespace MVCBlogApp.Controllers
 
                 return RedirectToAction("Index", "Blog");
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(registerRequest);

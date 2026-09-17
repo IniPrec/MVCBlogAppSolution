@@ -53,7 +53,7 @@ namespace MVCBlog.Presentation.Controllers
             ViewBag.CommentsToShow = commentsToShow;
 
             List<BlogResponse> allBlogs = await _blogService.GetAllBlogs();
-            ViewBag.MorePosts = allBlogs.Where(b => b.BlogId == id).Take(3).ToList();
+            ViewBag.MorePosts = allBlogs.Where(b => b.BlogId != id).Take(3).ToList();
 
             string? userIdString = HttpContext.Session.GetString("UserId");
             ViewBag.HasLiked = !string.IsNullOrEmpty(userIdString) && await _likeService.HasUserLikedBlog(id, Guid.Parse(userIdString));
@@ -94,7 +94,7 @@ namespace MVCBlog.Presentation.Controllers
 
         public async Task<IActionResult> Update(Guid id)
         {
-            if (isAdmin()) return RedirectToAction("Index");
+            if (!isAdmin()) return RedirectToAction("Index");
 
             BlogResponse? blog = await _blogService.GetBlogById(id);
 
