@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string sql = @"INSERT INTO Comments (CommentId, CommentText, CreatedAt, UpdatedAt, IsDeleted, BlogId, UserId)
+                string sql = @"INSERT INTO Comments (CommentId, CommentText, CreatedAt, IsDeleted, BlogId, UserId)
                                 VALUES (@CommentId, @CommentText, @CreatedAt, @IsDeleted, @BlogId, @UserId)";
                 await connection.ExecuteAsync(sql, comment);
 
