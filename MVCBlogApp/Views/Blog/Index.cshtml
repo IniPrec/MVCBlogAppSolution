@@ -27,9 +27,16 @@
     }
 </div>
 
-<div>
-    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+<div class="pagination">
+    @for (int i = 1; i <= ViewBag.TotalPages; i++)
     {
-        <a asp-controller="Blog" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="btn-cancel">See more posts</a>
+        if (i == ViewBag.CurrentPage)
+        {
+            <span class="current-page">@i</span>
+        }
+        else
+        {
+            <a asp-controller="Blog" asp-action="Index" asp-route-page="@i" class="page-link">@i</a>
+        }
     }
 </div>

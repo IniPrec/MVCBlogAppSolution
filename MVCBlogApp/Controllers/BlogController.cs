@@ -53,7 +53,7 @@ namespace MVCBlog.Presentation.Controllers
             ViewBag.CommentsToShow = commentsToShow;
 
             List<BlogResponse> allBlogs = await _blogService.GetAllBlogs();
-            ViewBag.MorePosts = allBlogs.Where(b => b.BlogId != id).Take(3).ToList();
+            ViewBag.MorePosts = allBlogs.Where(b => b.BlogId != id).OrderBy(b => Guid.NewGuid()).Take(3).ToList();
 
             string? userIdString = HttpContext.Session.GetString("UserId");
             ViewBag.HasLiked = !string.IsNullOrEmpty(userIdString) && await _likeService.HasUserLikedBlog(id, Guid.Parse(userIdString));

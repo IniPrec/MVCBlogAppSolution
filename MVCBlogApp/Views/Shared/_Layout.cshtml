@@ -6,36 +6,32 @@
     <title>@ViewData["Title"] - MVCBlogApp</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&family=Inter:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Seri+4:opsz,wght@8..60,400;8..60,700&family=Inter:wght@400;500;600&display=swap" />
           <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-
-    <header class="site-header">
+    <header>
         <nav class="navbar">
-            <div class="container navbar-container">
-                <a class="navbar-logo" asp-controller="Blog" asp-action="Index">Innie's Blog</a>
-                @{
-                    var userId = Context.Session.GetString("UserId");
-                    var userName = Context.Session.GetString("UserName");
-                }
-                <ul class="navbar-menu">
-                    <li class="navbar-item"><a class="navbar-link" asp-controller="Blog" asp-action="Index">Home</a>
-                    </li>
+            <a class="navbar-logo" asp-controller="Blog" asp-action="Index">Innie's Blog</a>
+            @{
+                var userId = Context.Session.GetString("UserId");
+                var userName = Context.Session.GetString("UserName");
+                var role = Context.Session.GetString("Role");
+            }
+            <ul class="nav">
+                <li><a class="navbar-link" asp-controller="Blog" asp-action="Index">Home</a></li>
 
-                    @if (string.IsNullOrEmpty(userId))
-                    {
-                        <li class="navbar-item"><a class="navbar-link" asp-controller="Account" asp-action="Register">Sign Up</a></li>
-                        <li class="navbar-item"><a class="navbar-link" asp-controller="Account" asp-action="Login">Login</a></li>
-                    }
-                    else
-                    {
-                        <li class="navbar-item"><span class="user-name">@userName</span></li>
-                        <li class="navbar-item"><a class="navbar-link" asp-controller="Account" asp-action="Logout">Logout</a></li>
-                    }
-                </ul>
-            </div>
+                @if (string.IsNullOrEmpty(userId))
+                {
+                    <li><a asp-controller="Account" asp-action="Register">Sign Up</a></li>
+                    <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+                }
+                else
+                {
+                    <li><span class="user-name">@(role == "Admin" ? "Admin, " + userName : userName)</span></li>
+                    <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                }
+            </ul>
         </nav>
     </header>
 
@@ -47,11 +43,11 @@
 
     <footer>
         <div class="container">
-            &copy; 2026 - Innie's Blog - <a class="footer-link" asp-controller="Blog" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - Innie's Blog
         </div>
     </footer>
 
-    <script href="~/js/site.jsscript>"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
