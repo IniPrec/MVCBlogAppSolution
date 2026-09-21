@@ -1,6 +1,6 @@
 ﻿using Core.Interfaces;
 using Core.Interfaces.DTO;
-using Core.Domain.Entities;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.Services

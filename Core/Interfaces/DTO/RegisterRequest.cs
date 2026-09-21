@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Core.Domain.Entities;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.Interfaces.DTO

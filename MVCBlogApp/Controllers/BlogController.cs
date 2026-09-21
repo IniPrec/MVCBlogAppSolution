@@ -58,6 +58,11 @@ namespace MVCBlog.Presentation.Controllers
             string? userIdString = HttpContext.Session.GetString("UserId");
             ViewBag.HasLiked = !string.IsNullOrEmpty(userIdString) && await _likeService.HasUserLikedBlog(id, Guid.Parse(userIdString));
 
+            if (isAdmin())
+            {
+                ViewBag.Likers = await _likeService.GetLikersByBlogid(id);
+            }
+
             return View(blog);
         }
 

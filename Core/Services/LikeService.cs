@@ -1,16 +1,18 @@
 ﻿using Core.Interfaces;
 using Core.Interfaces.DTO;
-using Core.Domain.Entities;
+using Domain.Entities;
 
 namespace Core.Services
 {
     public class LikeService : ILikeService
     {
         private readonly ILikeRepository _likeRepository;
+        private readonly IUserRepository _userRepository;
 
-        public LikeService(ILikeRepository likeRepository)
+        public LikeService(ILikeRepository likeRepository, IUserRepository userRepository)
         {
-            _likeRepository = likeRepository;   
+            _likeRepository = likeRepository;  
+            _userRepository = userRepository;
         }
 
         public async Task<LikeResponse> AddLike(AddLikeRequest? addLikeRequest)
@@ -35,6 +37,20 @@ namespace Core.Services
         public async Task<int> GetLikeCountByBlogId(Guid blogId)
         {
             return await _likeRepository.GetLikeCountByBlogId(blogId);
+        }
+
+        public async Task<List<string>> GetLikersByBlogid(Guid blogId)
+        {
+            List<Guid> userIds = await _likeRepository.GetUserIdsByBlogId(blogId);
+            List<string> names = new List<string>();
+
+            foreach (var userId in userIds)
+            {
+                User? user = await _userRepository.GetUserById(userId);
+                names.Add(user?.UserName ?? "Unknown");
+            }
+
+            return names;
         }
 
         public async Task<bool> HasUserLikedBlog(Guid blogId, Guid userId)

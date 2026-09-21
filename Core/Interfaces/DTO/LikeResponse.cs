@@ -1,4 +1,4 @@
-﻿using Core.Domain.Entities;
+﻿using Domain.Entities;
 
 namespace Core.Interfaces.DTO
 {

@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="BlogAppTests/BlogAppTests.csproj" />
-  <Project Path="Core/Core.csproj" Id="70e248f9-1ea5-4a0a-aafd-bba27be3e3cb" />
+  <Project Path="Core/Application.csproj" Id="70e248f9-1ea5-4a0a-aafd-bba27be3e3cb" />
+  <Project Path="Domain/Domain.csproj" Id="ff0e4465-e763-416e-b752-c83eb1045bb7" />
   <Project Path="Infrastructure/Infrastructure.csproj" Id="a4b05bca-a534-4876-8873-d29d001447c2" />
   <Project Path="MVCBlogApp/MVCBlogApp.csproj" />
 </Solution>

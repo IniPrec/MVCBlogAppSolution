@@ -16,6 +16,12 @@
             @(ViewBag.HasLiked ? "❤️Liked" : "Like") (@ViewBag.LikeCount)
         </button>
     </form>
+    @if (role == "Admin" && ViewBag.Likers != null)
+    {
+        <div class="post-meta">
+            Likes: @string.Join(", ", (List<string>)ViewBag.Likers)
+        </div>
+    }
 </div>
 
 <div class="post-list">
@@ -36,11 +42,11 @@
         {
             <div class="post-entry">
                 <div>@comment.CommentText</div>
-                <div class="post-meta">@comment.CreatedAt.ToString("MMM dd, yyyy")</div>
+                <div class="post-meta">@comment.UserName &middot; @comment.CreatedAt.ToString("MMM dd, yyyy")</div>
             </div>
         }
 
-        @if (ViewBag.TotalCommetns > ViewBag.CommentsToShow)
+        @if (ViewBag.TotalComments > ViewBag.CommentsToShow)
         {
             <a asp-controller="Blog" asp-action="Details" asp-route-id="@Model.BlogId" asp-route-commentsToShow="@ViewBag.CommentsToShow + 5">See more comments</a>
         }
@@ -50,14 +56,6 @@
         <textarea name="commentText" class="form-input" rows="3" placeholder="Write a comment..."></textarea>
         <button type="submit" class="btn-publish">Submit</button>
     </form>
-
-    @foreach (var comment in ViewBag.Comments)
-    {
-        <div class="post-entry">
-            <div>@comment.CommentText</div>
-            <div class="post-meta">@comment.CreatedAt.ToString("MMM dd, yyyy")</div>
-        </div>
-    }
 </div>
 
 <div class="post-list">

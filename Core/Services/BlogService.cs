@@ -1,6 +1,6 @@
 ﻿using Core.Interfaces;
 using Core.Interfaces.DTO;
-using Core.Domain.Entities;
+using Domain.Entities;
 
 namespace Core.Services
 {

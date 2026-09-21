@@ -1,6 +1,6 @@
-﻿using Core.Domain.Entities;
+﻿using Domain.Entities;
 
-namespace Core.Interfaces.DTO
+namespace Core.Interfaces
 {
     public interface ILikeRepository
     {
@@ -8,5 +8,6 @@ namespace Core.Interfaces.DTO
         Task<int> GetLikeCountByBlogId(Guid blogId);
         Task<Like?> GetLike(Guid blogId, Guid userId);
         Task<bool> RemoveLike(Guid blogId, Guid userId);
+        Task<List<Guid>> GetUserIdsByBlogId(Guid blogId);
     }
 }

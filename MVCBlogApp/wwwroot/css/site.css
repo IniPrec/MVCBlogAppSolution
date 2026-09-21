@@ -249,10 +249,10 @@ header {
     box-sizing: border-box;
 }
 
-    .form-input:focus {
-        outline: none;
-        border-color: var(--color-accent);
-    }
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
 
 .search-box {
     width: 100%;
@@ -285,4 +285,14 @@ footer a {
 
 footer a:hover {
     color: #f5f5f5;
+}
+
+.search-box {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-divider);
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
 }

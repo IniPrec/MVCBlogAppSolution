@@ -1,7 +1,6 @@
 using Core.Interfaces;
 using Infrastructure.Repositories;
 using Core.Services;
-using Core.Interfaces.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();

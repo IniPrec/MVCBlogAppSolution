@@ -1,5 +1,5 @@
-﻿using Core.Domain.Entities;
-using Core.Interfaces.DTO;
+﻿using Domain.Entities;
+using Core.Interfaces;
 using Dapper;
 using Microsoft.Data.SqlClient;
 
@@ -54,6 +54,17 @@ namespace Infrastructure.Repositories
                 int rows = await connection.ExecuteAsync(sql, new { BlogId = blogId, UserId = userId });
 
                 return rows > 0;    
+            }
+        }
+
+        public async Task<List<Guid>> GetUserIdsByBlogId(Guid blogId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string sql = "SELECT UserId FROM Likes WHERE BlogId = @BlogId";
+                var userIds = await connection.QueryAsync<Guid>(sql, new { BlogId = blogId });
+
+                return userIds.ToList();
             }
         }
     }

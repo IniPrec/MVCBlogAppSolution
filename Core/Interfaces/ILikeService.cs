@@ -8,5 +8,6 @@ namespace Core.Interfaces
         Task<bool> HasUserLikedBlog(Guid blogId, Guid UserId);
         Task<LikeResponse> AddLike(AddLikeRequest? addLikeRequest);
         Task<bool> RemoveLike(Guid blogId, Guid userId);
+        Task<List<string>> GetLikersByBlogid(Guid blogId);
     }
 }
