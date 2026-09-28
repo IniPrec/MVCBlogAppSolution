@@ -11,6 +11,7 @@ namespace Core.Interfaces.DTO
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
+        [Compare("Email", ErrorMessage = "Email already exist")]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Password is required")]

@@ -21,6 +21,13 @@ namespace Core.Services
                 throw new ArgumentNullException(nameof(registerRequest));
             }
 
+            User? existingUsername = await _userRepository.GetUserByUserName(registerRequest.UserName!);
+
+            if (existingUsername != null)
+            {
+                throw new InvalidOperationException("Username already exist.");
+            }
+
             User? existingUser = await _userRepository.GetUserByEmail(registerRequest.Email!);
             if (existingUser != null)
             {

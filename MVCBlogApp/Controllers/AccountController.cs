@@ -84,5 +84,10 @@ namespace MVCBlogApp.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
+
+        //public async Task<IActionResult> IsEmailRegistered(string email)
+        //{
+            
+        //}
     }
 }

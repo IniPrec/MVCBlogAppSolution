@@ -43,5 +43,14 @@ namespace Infrastructure.Repositories
                 return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserId = userId });
             }
         }
+
+        public async Task<User?> GetUserByUserName(string userName)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string sql = "SELECT * FROM Users WHERE Username = @Username";
+                return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserName = userName });
+            }
+        }
     }
 }
