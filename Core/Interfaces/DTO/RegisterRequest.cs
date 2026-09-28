@@ -16,7 +16,11 @@ namespace Core.Interfaces.DTO
         [Required(ErrorMessage = "Password is required")]
         public string? Password { get; set; }
 
-        public string Role { get; set; } = "Viewer";
+        [Required(ErrorMessage = "Confirmation is required")]
+        [Compare("Password", ErrorMessage = "Password must match")]
+        public string? ConfirmPassword { get; set; }
+
+        public string Role { get; set; } = "User";
 
         public User ToUser()
         {
