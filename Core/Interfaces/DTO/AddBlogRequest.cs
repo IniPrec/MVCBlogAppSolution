@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Domain.Entities;
 
 namespace Core.Interfaces.DTO
@@ -9,7 +10,11 @@ namespace Core.Interfaces.DTO
     public class AddBlogRequest
     {
         public Guid UserId { get; set; }
+
+        [Required(ErrorMessage = "Title cannot be blank")]
         public string? BlogTitle { get; set; }
+
+        [Required(ErrorMessage = "Content cannot be blank")]
         public string? BlogContent { get; set; }
 
         public Blog ToBlog()
