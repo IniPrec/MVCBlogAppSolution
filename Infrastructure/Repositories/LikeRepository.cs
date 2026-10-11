@@ -2,6 +2,7 @@
 using Core.Interfaces;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Repositories
 {
@@ -9,9 +10,9 @@ namespace Infrastructure.Repositories
     {
         private readonly string _connectionString;
 
-        public LikeRepository(string connectionString)
+        public LikeRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("BlogServerDb");
         }
 
         public async Task<Like> AddLike(Like like)

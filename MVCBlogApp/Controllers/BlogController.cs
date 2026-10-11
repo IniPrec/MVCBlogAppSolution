@@ -16,6 +16,20 @@ namespace MVCBlog.Presentation.Controllers
             return role == "Admin";
         }
 
+        private bool isLoggedIn()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            return role == "Admin" || role == "User";
+        }
+
+        private bool CanEditBlog(Guid blogOwnerId)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            var userId = HttpContext.Session.GetString("UserId");
+            if (role == "Admin") return true;
+            return role == "User" && userId == blogOwnerId.ToString();
+        }
+
         public BlogController(IBlogService blogService, ICommentService commentService, ILikeService likeService)
         {
             _blogService = blogService;
@@ -99,14 +113,14 @@ namespace MVCBlog.Presentation.Controllers
 
         public async Task<IActionResult> Update(Guid id)
         {
-            if (!isAdmin()) return RedirectToAction("Index");
-
             BlogResponse? blog = await _blogService.GetBlogById(id);
 
             if (blog == null)
             {
                 return NotFound();
             }
+
+            if (!CanEditBlog(blog.UserId)) return RedirectToAction("Index");
 
             UpdateBlogRequest updateBlogRequest = new UpdateBlogRequest
             {
@@ -121,7 +135,11 @@ namespace MVCBlog.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(Guid id, UpdateBlogRequest updateBlogRequest)
         {
-            if (!isAdmin()) return RedirectToAction("Index");
+            BlogResponse? existingBlog = await _blogService.GetBlogById(id);
+
+            if (existingBlog == null) return NotFound();
+
+            if (!CanEditBlog(existingBlog.UserId)) return RedirectToAction("Index");
 
             if (!ModelState.IsValid)
             {
@@ -209,6 +227,16 @@ namespace MVCBlog.Presentation.Controllers
             }
 
             return RedirectToAction("Details", new { id = blogId });
+        }
+
+        public async Task<IActionResult> MyPosts()
+        {
+            if (!isLoggedIn()) return RedirectToAction("Login", "Account");
+
+            var userId = Guid.Parse(HttpContext.Session.GetString("UserId")!);
+            var myBlogs = await _blogService.GetBlogsByUserId(userId);
+
+            return View(myBlogs);
         }
     }
 }

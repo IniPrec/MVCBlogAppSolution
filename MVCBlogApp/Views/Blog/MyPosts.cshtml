@@ -1,0 +1,47 @@
+﻿@model List<Core.Interfaces.DTO.BlogResponse>
+
+@{
+    var role = Context.Session.GetString("Role");
+}
+
+<div class="blog-header">
+    <h1>My Posts</h1>
+    <a asp-controller="Blog" asp-action="Create" method="post" class="btn-publish">New Post</a>
+</div>
+
+<div class="post-list">
+    <input type="text" id="searchBox" class="search-box" placeholder="Search blogs..." />
+
+    @if(!Model.Any())
+    {
+        <div class="text-center text-muted py-5">
+            <p>No posts yet.</p>
+            <a asp-controller="Blog" asp-action="Create" method="post" class="btn-publish">Write your first post</a>
+        </div>
+    }
+    else
+    {
+        @foreach (var blog in Model)
+        {
+            <div class="blog-card">
+                <h4><a asp-controller="Blog" asp-action="Details" asp-route-id="@blog.BlogId">@blog.BlogTitle</a></h4>
+                <p>@blog.CreatedAt.ToString("MMM dd, yyyy")</p>
+                <a asp-controller="Blog" asp-action="Update" asp-route-id="@blog.BlogId" class="btn-publish">Edit</a>
+            </div>
+        }
+    }
+</div>
+
+<div class="pagination">
+    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+    {
+        if (i == ViewBag.CurrentPage)
+        {
+            <span class="current-page">@i</span>
+        }
+        else
+        {
+            <a asp-controller="Blog" asp-action="Index" asp-route-page="@i" class="page-link">@i</a>
+        }
+    }
+</div>

@@ -1,20 +1,27 @@
 using Core.Interfaces;
 using Infrastructure.Repositories;
 using Core.Services;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IBlogRepository>(sp => new BlogRepository(builder.Configuration.GetConnectionString("BlogServerDb")));
+builder.Services.AddIdentity
+
+builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+
 builder.Services.AddScoped<IBlogService, BlogService>();
 
-builder.Services.AddScoped<IUserRepository>(sp => new UserRepository(builder.Configuration.GetConnectionString("BlogServerDb")));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-builder.Services.AddScoped<ILikeRepository>(sp => new LikeRepository(builder.Configuration.GetConnectionString("BlogServerDb")));
+builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+
 builder.Services.AddScoped<ILikeService, LikeService>();
 
-builder.Services.AddScoped<ICommentRepository>(sp => new CommentRepository(builder.Configuration.GetConnectionString("BlogServerDb")));
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
 builder.Services.AddScoped<ICommentService, CommentService>();
 
 builder.Services.AddDistributedMemoryCache();

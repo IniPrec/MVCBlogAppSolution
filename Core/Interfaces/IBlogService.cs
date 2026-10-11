@@ -16,5 +16,7 @@ namespace Core.Interfaces
         Task<BlogResponse> UpdateBlog(UpdateBlogRequest? updateBlogRequest);
 
         Task<bool> DeleteBlog(Guid? blogId);
+
+        Task<List<BlogResponse>> GetBlogsByUserId(Guid userId);
     }
 }

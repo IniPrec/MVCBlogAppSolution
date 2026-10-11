@@ -46,7 +46,7 @@ namespace Core.Services
 
             foreach (var userId in userIds)
             {
-                User? user = await _userRepository.GetUserById(userId);
+                ApplicationUser? user = await _userRepository.GetUserById(userId);
                 names.Add(user?.UserName ?? "Unknown");
             }
 

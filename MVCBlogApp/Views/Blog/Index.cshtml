@@ -2,11 +2,12 @@
 
 @{
     var role = Context.Session.GetString("Role");
+    var currentUserId = Context.Session.GetString("UserId");
 }
 
 <div class="blog-header">
     <h1>Innie's Blog</h1>
-    @if (role == "Admin")
+    @if (role == "Admin" || role == "User")
     {
         <a asp-controller="Blog" asp-action="Create" method="post" class="btn-publish">New Post</a>
     }
@@ -25,6 +26,10 @@
                 @blog.BlogContent.Substring(0, Math.Min(blog.BlogContent.Length, 150))...
             </div>
             <div class="post-meta">@blog.UserName &middot; @blog.CreatedAt.ToString("MMM dd, yyyy")</div>
+            @if (role == "Admin" || currentUserId == blog.UserId.ToString())
+            {
+                <a asp-controller="Blog" asp-action="Update" asp-route-id="@blog.BlogId">Edit</a>
+            }
         </div>
     }
 </div>

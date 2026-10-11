@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Domain.Entities;
 using Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Repositories
 {
@@ -9,9 +10,9 @@ namespace Infrastructure.Repositories
     {
         private readonly string _connectionString;
 
-        public CommentRepository(string connectionString)
+        public CommentRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("BlogServerDb");
         }
 
         public async Task<Comment> AddComment(Comment comment)

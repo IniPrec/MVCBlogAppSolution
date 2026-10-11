@@ -66,5 +66,11 @@ namespace Core.Services
                 throw new ArgumentNullException(nameof(blogId));
             return await _blogRepository.DeleteBlog(blogId.Value);
         }
+
+        public async Task<List<BlogResponse>> GetBlogsByUserId(Guid userId)
+        {
+            var blogs = await _blogRepository.GetBlogsByUserId(userId);
+            return blogs.Select(b => b.ToBlogResponse()).ToList();
+        }
     }
 }

@@ -4,9 +4,9 @@ namespace Core.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> AddUser(User user);
-        Task<User?> GetUserByUserName(string userName);
-        Task<User?> GetUserByEmail(string email);
-        Task<User?> GetUserById(Guid userId);
+        Task<ApplicationUser> AddUser(ApplicationUser user);
+        Task<ApplicationUser?> GetUserByUserName(string userName);
+        Task<ApplicationUser?> GetUserByEmail(string email);
+        Task<ApplicationUser?> GetUserById(Guid userId);
     }
 }

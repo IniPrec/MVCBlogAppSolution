@@ -2,16 +2,17 @@
 using Microsoft.Data.SqlClient;
 using Domain.Entities;
 using Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Repositories
 {
     public class BlogRepository : IBlogRepository
-    {
+    { 
         private readonly string _connectionString;
 
-        public BlogRepository(string connectionString)
+        public BlogRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("BlogServerDb");
         }
 
         public async Task<Blog> AddBlog(Blog blog)
@@ -63,6 +64,13 @@ namespace Infrastructure.Repositories
                 int rowsAffected = await connection.ExecuteAsync(sql, new { BlogId = blogId });
                 return rowsAffected > 0;
             }
+        }
+
+        public async Task<IEnumerable<Blog>> GetBlogsByUserId(Guid userId)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            string sql = "SELECT * FROM Blogs WHERE UserId = @UserId AND IsDeleted = 0 ORDER BY CreatedAt DESC";
+            return await connection.QueryAsync<Blog>(sql, new { userId });
         }
     }
 }

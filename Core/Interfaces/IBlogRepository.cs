@@ -9,5 +9,6 @@ namespace Core.Interfaces
         Task<Blog?> GetBlogById(Guid blogId);
         Task<Blog> UpdateBlog(Blog blog);
         Task<bool> DeleteBlog(Guid blogId);
+        Task<IEnumerable<Blog>> GetBlogsByUserId(Guid userId);
     }
 }

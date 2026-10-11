@@ -41,7 +41,7 @@ namespace Core.Services
             foreach (var comment in comments)
             {
                 CommentResponse response = comment.ToCommentResponse();
-                User? user = await _userRepository.GetUserById(comment.UserId);
+                ApplicationUser? user = await _userRepository.GetUserById(comment.UserId);
                 response.UserName = user?.UserName ?? "Unknown";
                 responses.Add(response);
             }

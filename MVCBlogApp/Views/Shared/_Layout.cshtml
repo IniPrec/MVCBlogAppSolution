@@ -29,6 +29,7 @@
                 else
                 {
                     <li><span class="user-name">@(role == "Admin" ? "Admin, " + userName : userName)</span></li>
+                    <li><a asp-controller="Blog" asp-action="MyPosts">My Posts</a>"</li>
                     <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
                 }
             </ul>

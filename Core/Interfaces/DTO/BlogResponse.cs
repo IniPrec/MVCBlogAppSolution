@@ -10,6 +10,7 @@ namespace Core.Interfaces.DTO
         public string? BlogContent { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? UserName { get; set; }
+        public Guid UserId { get; set; }
 
         public override bool Equals(object? obj)
         {

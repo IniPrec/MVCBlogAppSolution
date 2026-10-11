@@ -21,21 +21,21 @@ namespace Core.Services
                 throw new ArgumentNullException(nameof(registerRequest));
             }
 
-            User? existingUsername = await _userRepository.GetUserByUserName(registerRequest.UserName!);
+            ApplicationUser? existingUsername = await _userRepository.GetUserByUserName(registerRequest.UserName!);
 
             if (existingUsername != null)
             {
                 throw new InvalidOperationException("Username already exist.");
             }
 
-            User? existingUser = await _userRepository.GetUserByEmail(registerRequest.Email!);
+            ApplicationUser? existingUser = await _userRepository.GetUserByEmail(registerRequest.Email!);
             if (existingUser != null)
             {
                 throw new InvalidOperationException("Email is already registered");
             }
 
-            User user = registerRequest.ToUser();
-            User registeredUser = await _userRepository.AddUser(user);
+            ApplicationUser user = registerRequest.ToUser();
+            ApplicationUser registeredUser = await _userRepository.AddUser(user);
 
             return registeredUser.ToUserResponse();
         }
@@ -47,14 +47,14 @@ namespace Core.Services
                 throw new ArgumentNullException(nameof(loginRequest));
             }
 
-            User? user = await _userRepository.GetUserByEmail(loginRequest.Email!);
+            ApplicationUser? user = await _userRepository.GetUserByEmail(loginRequest.Email!);
 
             if (user == null)
             {
                 throw new InvalidOperationException("Invalid email or password");
             }
 
-            PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
+            PasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
 
             PasswordVerificationResult result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, loginRequest.Password!);
 

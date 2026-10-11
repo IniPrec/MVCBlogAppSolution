@@ -12,7 +12,7 @@ namespace Core.Interfaces.DTO
 
     public static class UserResponseExtensions
     {
-        public static UserResponse ToUserResponse(this User user)
+        public static UserResponse ToUserResponse(this ApplicationUser user)
         {
             return new UserResponse
             {

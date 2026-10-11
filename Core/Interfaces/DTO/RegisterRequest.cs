@@ -23,9 +23,9 @@ namespace Core.Interfaces.DTO
 
         public string Role { get; set; } = "User";
 
-        public User ToUser()
+        public ApplicationUser ToUser()
         {
-            User user = new User
+            ApplicationUser user = new ApplicationUser
             {
                 UserId = Guid.NewGuid(),
                 UserName = this.UserName,
@@ -33,7 +33,7 @@ namespace Core.Interfaces.DTO
                 Role = this.Role
             };
 
-            PasswordHasher<User> hasher = new PasswordHasher<User>();
+            PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
             user.PasswordHash = hasher.HashPassword(user, this.Password!);
 
             return user;
