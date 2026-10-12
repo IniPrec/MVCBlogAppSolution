@@ -1,6 +1,6 @@
-﻿using Core.Interfaces.DTO;
+﻿using Application.Interfaces.DTO;
 
-namespace Core.Interfaces
+namespace Application.Interfaces
 {
     /// <summary>
     /// Represents the business logic layer for managing blogs, providing methods for adding, retrieving, updating, and deleting blog entries.

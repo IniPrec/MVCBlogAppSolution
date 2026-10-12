@@ -15,17 +15,13 @@ namespace Infrastructure.Identity
             _connectionString = configuration.GetConnectionString("BlogServerDb");
         }
 
-        public Task AddToRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string sql = @"INSERT INTO Users (UserId, UserName, Email, PasswordHash, Role) 
-                               VALUES (@UserId, @UserName, @Email, @PasswordHash, @Role)";
+                string sql = @"INSERT INTO Users (UserId, UserName, Email, PasswordHash, RoleId) 
+                               VALUES (@UserId, @UserName, @Email, @PasswordHash, @RoleId)";
                 await connection.ExecuteAsync(sql, new
                 {
                     UserId = user.Id,
@@ -42,7 +38,7 @@ namespace Infrastructure.Identity
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string sql = "SELECT * FROM Users WHERE Email = @Email";
+                string sql = "SELECT UserId AS Id, UserName, Email, PasswordHash, RoleId FROM Users WHERE Email = @Email";
                 return await connection.QueryFirstOrDefaultAsync<ApplicationUser>(sql, new { Email = normalizedEmail });
             }
         }
@@ -50,16 +46,65 @@ namespace Infrastructure.Identity
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string sql = "SELECT * FROM Users WHERE UserId = @UserId";
-                return await connection.QueryFirstOrDefaultAsync<ApplicationUser>(sql, new { UserId = userId });
+                string sql = "SELECT UserId AS Id, UserName, Email, PasswordHash, RoleId FROM Users WHERE UserId = @UserId";
+                return await connection.QueryFirstOrDefaultAsync<ApplicationUser>(sql, new { UserId = Guid.Parse(userId) });
             }
         }
         public async Task<ApplicationUser?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string sql = "SELECT * FROM Users WHERE Username = @Username";
+                string sql = "SELECT UserId AS Id, UserName, Email, PasswordHash, RoleId FROM Users WHERE UserName = @UserName";
                 return await connection.QueryFirstOrDefaultAsync<ApplicationUser>(sql, new { UserName = normalizedUserName });
+            }
+        }
+        public async Task AddToRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                var roleId = await connection.QuerySingleAsync<Guid>("SELECT RoleId FROM Roled WHERE NormalisedName = @Name", new { Name = roleName.ToUpper() });
+
+                await connection.ExecuteAsync("UPDATE Users SET RoleId = @RoleId WHERE UserId = @UserId", new { RoleId = roleId, UserId = user.Id });
+
+                user.RoleId = roleId;
+            }
+        }
+        public async Task RemoveFromRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                var userRoleId = await connection.QuerySingleAsync<Guid>("SELECT RoleId FROM Roles WHERE NormalisedName = USER");
+
+                await connection.ExecuteAsync("UPDATE Users SET RoleId = @RoleId WHERE UserId = @UserId");
+
+                user.RoleId = userRoleId;
+            }
+        }
+        public async Task<IList<string>> GetRolesAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                var roleName = await connection.QuerySingleOrDefaultAsync<string>("SELECT Name FROM Roles WHERE RoleId = @RoleId", new { user.RoleId });
+
+                return roleName == null ? new List<string>() : new List<string> { roleName };
+            }
+        }
+        public async Task<bool> IsInRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                var count = await connection.QuerySingleAsync<int>(@"SELECT COUNT(*) FROM Users u JOIN Roles r ON r.RoleId = u.RoleId WHERE u.UserId = @UserId AND r.NormalisedName = @Name", new { UserId = user.Id, Name = roleName.ToUpper() });
+
+                return count > 0;
+            }
+        }
+        public async Task<IList<ApplicationUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                var users = await connection.QueryAsync<ApplicationUser>(@"SELECT u.UserId AS Id, u.UserName, u.Email, u.PasswordHash, u.RoleId FROM Users u JOIN Roles r ON r.RoleId = u.RoleId WHERE r.NormalisedName = @Name", new { Name = roleName.ToUpper() });
+
+                return users.ToList();
             }
         }
 
@@ -97,10 +142,6 @@ namespace Infrastructure.Identity
             throw new NotImplementedException();
         }
 
-        public Task<IList<string>> GetRolesAsync(ApplicationUser user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
@@ -112,25 +153,13 @@ namespace Infrastructure.Identity
             throw new NotImplementedException();
         }
 
-        public Task<IList<ApplicationUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<bool> HasPasswordAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> IsInRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task RemoveFromRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task SetEmailAsync(ApplicationUser user, string? email, CancellationToken cancellationToken)
         {

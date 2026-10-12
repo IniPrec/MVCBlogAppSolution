@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace Core.Interfaces.DTO
+namespace Application.Interfaces.DTO
 {
     public class RegisterRequest
     {
@@ -22,21 +22,5 @@ namespace Core.Interfaces.DTO
         public string? ConfirmPassword { get; set; }
 
         public string Role { get; set; } = "User";
-
-        public ApplicationUser ToUser()
-        {
-            ApplicationUser user = new ApplicationUser
-            {
-                UserId = Guid.NewGuid(),
-                UserName = this.UserName,
-                Email = this.Email,
-                Role = this.Role
-            };
-
-            PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
-            user.PasswordHash = hasher.HashPassword(user, this.Password!);
-
-            return user;
-        }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Core.Interfaces;
-using Core.Interfaces.DTO;
+﻿using Application.Interfaces;
+using Application.Interfaces.DTO;
 using Domain.Entities;
 
-namespace Core.Services
+namespace Application.Services
 {
     public class BlogService : IBlogService
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Core.Interfaces;
-using Core.Interfaces.DTO;
+using Application.Interfaces;
+using Application.Interfaces.DTO;
+using System.Security.Claims;
 
 namespace MVCBlog.Presentation.Controllers
 {
@@ -10,24 +11,27 @@ namespace MVCBlog.Presentation.Controllers
         private readonly ICommentService _commentService;
         private readonly ILikeService _likeService;
 
+        private bool isSuperAdmin()
+        {
+            return User.IsInRole("SuperAdmin");
+        }
+
         private bool isAdmin()
         {
-            string? role = HttpContext.Session.GetString("Role");
-            return role == "Admin";
+            return User.IsInRole("Admin") || User.IsInRole("SuperAdmin");
         }
 
         private bool isLoggedIn()
         {
-            var role = HttpContext.Session.GetString("Role");
-            return role == "Admin" || role == "User";
+            return User.Identity?.IsAuthenticated == true;
         }
 
         private bool CanEditBlog(Guid blogOwnerId)
         {
-            var role = HttpContext.Session.GetString("Role");
-            var userId = HttpContext.Session.GetString("UserId");
-            if (role == "Admin") return true;
-            return role == "User" && userId == blogOwnerId.ToString();
+            if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")) return true;
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return User.IsInRole("User") && userId == blogOwnerId.ToString();
         }
 
         public BlogController(IBlogService blogService, ICommentService commentService, ILikeService likeService)
@@ -203,14 +207,12 @@ namespace MVCBlog.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> Comment(Guid blogId,string commentText)
         {
-            string? userIdString = HttpContext.Session.GetString("UserId");
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (string.IsNullOrEmpty(userIdString))
+            if (string.IsNullOrEmpty(userId.ToString()))
             {
                 return RedirectToAction("Login", "Account");
             }
-
-            Guid userId = Guid.Parse(userIdString);
 
             try
             {
@@ -233,10 +235,9 @@ namespace MVCBlog.Presentation.Controllers
         {
             if (!isLoggedIn()) return RedirectToAction("Login", "Account");
 
-            var userId = Guid.Parse(HttpContext.Session.GetString("UserId")!);
-            var myBlogs = await _blogService.GetBlogsByUserId(userId);
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            return View(myBlogs);
+            return View(userId);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using Core.Interfaces.DTO;
+﻿using Application.Interfaces.DTO;
 
-namespace Core.Interfaces
+namespace Application.Interfaces
 {
     public interface ILikeService
     {

@@ -1,19 +1,20 @@
-﻿using Core.Interfaces;
-using Core.Interfaces.DTO;
+﻿using Application.Interfaces;
+using Application.Interfaces.DTO;
 using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
-namespace Core.Services
+namespace Application.Services
 {
     public class LikeService : ILikeService
     {
         private readonly ILikeRepository _likeRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LikeService(ILikeRepository likeRepository, IUserRepository userRepository)
+		public LikeService(ILikeRepository likeRepository, UserManager<ApplicationUser> userManager)
         {
-            _likeRepository = likeRepository;  
-            _userRepository = userRepository;
-        }
+            _likeRepository = likeRepository;
+			_userManager = userManager;
+		}
 
         public async Task<LikeResponse> AddLike(AddLikeRequest? addLikeRequest)
         {
@@ -46,8 +47,8 @@ namespace Core.Services
 
             foreach (var userId in userIds)
             {
-                ApplicationUser? user = await _userRepository.GetUserById(userId);
-                names.Add(user?.UserName ?? "Unknown");
+                ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
+				names.Add(user?.UserName ?? "Unknown");
             }
 
             return names;

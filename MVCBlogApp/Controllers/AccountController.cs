@@ -1,16 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Core.Interfaces;
-using Core.Interfaces.DTO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
+using Dapper;
+using Infrastructure.Identity;
+using Application.Interfaces.DTO;
+using Domain.Entities;
+using Infrastructure.Repositories;
 
 namespace MVCBlogApp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IAuthService _authService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _configuration;
+        private readonly RoleRepository _roleRepository;
 
-        public AccountController(IAuthService authService)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, RoleRepository roleRepository)
         {
-            _authService = authService;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _configuration = configuration;
+            _roleRepository = roleRepository;
         }
 
         public IActionResult Register()
@@ -26,21 +37,28 @@ namespace MVCBlogApp.Controllers
                 return View(registerRequest);
             }
 
-            try
-            {
-                UserResponse user = await _authService.Register(registerRequest);
+            var userRoleId = await _roleRepository.GetRoleIdByName("User");
 
-                HttpContext.Session.SetString("UserId", user.UserId.ToString());
-                HttpContext.Session.SetString("UserName", user.UserName ?? string.Empty);
-                HttpContext.Session.SetString("Role", user.Role ?? string.Empty);
-
-                return RedirectToAction("Index", "Blog");
-            }
-            catch (Exception ex)
+            var user = new ApplicationUser
             {
-                ModelState.AddModelError("", ex.Message);
+                UserName = registerRequest.UserName,
+                Email = registerRequest.Email,
+                RoleId = userRoleId
+            };
+
+            var result = await _userManager.CreateAsync(user, registerRequest.Password!);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
                 return View(registerRequest);
             }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return RedirectToAction("Index", "Blog");
         }
 
         public IActionResult Login()
@@ -56,38 +74,20 @@ namespace MVCBlogApp.Controllers
                 return View(loginRequest);
             }
 
-            try
+            var user = await _userManager.FindByEmailAsync(loginRequest.Email!);
+            if (user == null)
             {
-                UserResponse? user = await _authService.Login(loginRequest);
-
-                if (user == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid email or password.");
-                    return View(loginRequest);
-                }
-
-                HttpContext.Session.SetString("UserId", user.UserId.ToString());
-                HttpContext.Session.SetString("UserName", user.UserName ?? string.Empty);
-                HttpContext.Session.SetString("Role", user.Role ?? string.Empty);
-
-                return RedirectToAction("Index", "Blog");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "Invalid email or password");
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
                 return View(loginRequest);
             }
+
+            return RedirectToAction("Index", "Blog");
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
-
-        //public async Task<IActionResult> IsEmailRegistered(string email)
-        //{
-            
-        //}
     }
 }

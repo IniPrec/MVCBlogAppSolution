@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using Core.Interfaces;
+using Application.Interfaces;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;

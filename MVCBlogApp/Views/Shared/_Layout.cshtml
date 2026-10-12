@@ -21,16 +21,20 @@
             <ul class="nav">
                 <li><a class="navbar-link" asp-controller="Blog" asp-action="Index">Home</a></li>
 
-                @if (string.IsNullOrEmpty(userId))
+                @if (User.Identity?.IsAuthenticated == true)
                 {
-                    <li><a asp-controller="Account" asp-action="Register">Sign Up</a></li>
-                    <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+                    <li><span class="user-name">@(User.IsInRole("Admin") || User.IsInRole("SuperAdmin") ? "Admin, " : userName)@User.Identity.Name</span></li>
+                    <li><a asp-controller="Blog" asp-action="MyPosts">My Posts</a>"</li>
+                    @if (User.IsInRole("SuperAdmin"))
+                    {
+                        <li><a asp-controller="User" asp-action="Index">Manage Users</a></li>
+                    }
+                    <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
                 }
                 else
                 {
-                    <li><span class="user-name">@(role == "Admin" ? "Admin, " + userName : userName)</span></li>
-                    <li><a asp-controller="Blog" asp-action="MyPosts">My Posts</a>"</li>
-                    <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                    <li><a asp-controller="Account" asp-action="Register">Sign Up</a></li>
+                    <li><a asp-controller="Account" asp-action="Login">Login</a></li>
                 }
             </ul>
         </nav>

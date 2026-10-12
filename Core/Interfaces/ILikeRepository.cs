@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Core.Interfaces
+namespace Application.Interfaces
 {
     public interface ILikeRepository
     {

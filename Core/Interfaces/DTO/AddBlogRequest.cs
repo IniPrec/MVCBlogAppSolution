@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Domain.Entities;
 
-namespace Core.Interfaces.DTO
+namespace Application.Interfaces.DTO
 {
     /// <summary>
     /// DTO class for adding a new blog

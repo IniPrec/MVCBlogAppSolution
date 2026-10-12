@@ -1,9 +1,10 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces.DTO;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {
     public interface IEmailService
     {
-        Task<bool> SendEmailAsync(EmailNotification emailNotification);
+        Task<bool> SendEmailAsync(EmailRequest emailRequest);
     }
 }

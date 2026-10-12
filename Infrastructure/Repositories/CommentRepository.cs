@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Domain.Entities;
-using Core.Interfaces;
+using Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Repositories

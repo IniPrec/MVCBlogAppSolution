@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Interfaces.DTO
+namespace Application.Interfaces.DTO
 {
     public class UpdateBlogRequest
     {

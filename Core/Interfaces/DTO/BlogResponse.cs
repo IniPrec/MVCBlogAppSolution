@@ -1,7 +1,7 @@
 ﻿using System;
 using Domain.Entities;
 
-namespace Core.Interfaces.DTO
+namespace Application.Interfaces.DTO
 {
     public class BlogResponse
     {

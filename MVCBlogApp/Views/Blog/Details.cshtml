@@ -1,4 +1,4 @@
-﻿@model Core.Interfaces.DTO.BlogResponse
+﻿@model Application.Interfaces.DTO.BlogResponse
 
 @{
     var role = Context.Session.GetString("Role");
@@ -16,7 +16,7 @@
             @(ViewBag.HasLiked ? "❤️Liked" : "Like") (@ViewBag.LikeCount)
         </button>
     </form>
-    @if (role == "Admin" && ViewBag.Likers != null)
+    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") && ViewBag.Likers != null)
     {
         <div class="post-meta">
             Likes: @string.Join(", ", (List<string>)ViewBag.Likers)

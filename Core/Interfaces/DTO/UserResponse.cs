@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
-namespace Core.Interfaces.DTO
+namespace Application.Interfaces.DTO
 {
     public class UserResponse
     {
@@ -16,10 +17,11 @@ namespace Core.Interfaces.DTO
         {
             return new UserResponse
             {
-                UserId = user.UserId,
+
+                UserId = Guid.Parse(user.Id),
                 UserName = user.UserName,
                 Email = user.Email,
-                Role = user.Role,
+                Role = UserManager<ApplicationUser>.GetRolesAsync(user),
             };
         }
     }

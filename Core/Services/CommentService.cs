@@ -1,19 +1,20 @@
-﻿using Core.Interfaces;
-using Core.Interfaces.DTO;
+﻿using Application.Interfaces;
+using Application.Interfaces.DTO;
 using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
-namespace Core.Services
+namespace Application.Services
 {
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CommentService(ICommentRepository commentRepository, IUserRepository userRepository)
+		public CommentService(ICommentRepository commentRepository, UserManager<ApplicationUser> userManager)
         {
             _commentRepository = commentRepository;
-            _userRepository = userRepository;
-        }
+			_userManager = userManager;
+		}
 
         public async Task<CommentResponse> AddComment(AddCommentRequest? addCommentRequest)
         {
@@ -41,8 +42,8 @@ namespace Core.Services
             foreach (var comment in comments)
             {
                 CommentResponse response = comment.ToCommentResponse();
-                ApplicationUser? user = await _userRepository.GetUserById(comment.UserId);
-                response.UserName = user?.UserName ?? "Unknown";
+                ApplicationUser? user = await _userManager.FindByIdAsync(comment.UserId.ToString());
+				response.UserName = user?.UserName ?? "Unknown";
                 responses.Add(response);
             }
 

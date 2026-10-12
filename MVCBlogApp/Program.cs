@@ -1,20 +1,16 @@
-using Core.Interfaces;
+using Application.Interfaces;
 using Infrastructure.Repositories;
-using Core.Services;
+using Application.Services;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddIdentity
-
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
 builder.Services.AddScoped<IBlogService, BlogService>();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<ILikeRepository, LikeRepository>();
 
@@ -23,6 +19,8 @@ builder.Services.AddScoped<ILikeService, LikeService>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 builder.Services.AddScoped<ICommentService, CommentService>();
+
+builder.Services.AddHttpClient<IEmailService, EmailService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
